@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TestForDrWeb</string>
+
+    //list screen
+    <string name="list_screen_top_bar_name">Установленные приложения</string>
+
+    //details screen
+    <string name="detail_screen_button">Запустить приложение</string>
+    <string name="detail_screen_apk_checksum">Контрольная сумма apk:</string>
+    <string name="detail_screen_package_name">Имя пакета:</string>
+</resources>
