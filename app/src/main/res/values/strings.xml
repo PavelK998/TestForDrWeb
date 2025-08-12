@@ -8,4 +8,8 @@
     <string name="detail_screen_button">Launch app</string>
     <string name="detail_screen_apk_checksum">Apk checksum:</string>
     <string name="detail_screen_package_name">Package name:</string>
+
+    <string name="start_app_error">Couldn\'t open the app</string>
+    <string name="error">Oops, something went wrong</string>
+
 </resources>

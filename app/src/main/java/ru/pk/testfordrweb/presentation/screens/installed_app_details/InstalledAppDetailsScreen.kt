@@ -1,5 +1,10 @@
 package ru.pk.testfordrweb.presentation.screens.installed_app_details
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.pk.testfordrweb.R
 import ru.pk.testfordrweb.presentation.components.DefaultButton
+import ru.pk.testfordrweb.presentation.components.Loading
 import ru.pk.testfordrweb.presentation.components.TitleText
 import ru.pk.testfordrweb.presentation.screens.installed_app_details.model.InstalledAppDetailsUiModel
 import ru.pk.testfordrweb.ui.theme.TestForDrWebTheme
@@ -53,56 +59,90 @@ fun InstalledAppDetailsScreen(
             )
         }
     ) { paddingValues ->
+        AnimatedContent(
+            uiState.isLoading,
+            transitionSpec = {
+                fadeIn(
+                    animationSpec = tween(800)
+                ) togetherWith fadeOut(animationSpec = tween(300))
+            },
+        ) { isLoading ->
+            when (isLoading) {
+                true -> {
+                    Loading(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                    )
+                }
+                false -> {
+                    ScreenContent(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                            .padding(horizontal = 16.dp),
+                        uiState = uiState,
+                        handleIntent = handleIntent
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ScreenContent(
+    modifier: Modifier = Modifier,
+    uiState: InstalledAppDetailsState,
+    handleIntent: (InstalledAppDetailsIntent) -> Unit
+) {
+    Column(
+        modifier = modifier
+    ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp)
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    style = MaterialTheme.typography.titleLarge,
-                    text = uiState.installedAppDetailsModel.appName
-                )
-                Text(
-                    text = uiState.installedAppDetailsModel.version
-                )
-            }
-            Box(
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                DefaultButton(
-                    modifier = Modifier.fillMaxWidth(0.5f),
-                    buttonText = stringResource(R.string.detail_screen_button),
-                    onClick = {
-                        handleIntent(InstalledAppDetailsIntent.OnLaunchBtnClick)
-                    }
-                )
-            }
-
-
-            TitleText(
-                modifier = Modifier.padding(top = 24.dp),
-                text = stringResource(R.string.detail_screen_package_name)
+            Text(
+                style = MaterialTheme.typography.titleLarge,
+                text = uiState.installedAppDetailsModel.appName
             )
             Text(
-                style = MaterialTheme.typography.bodyLarge,
-                text = uiState.installedAppDetailsModel.packageName
-            )
-            TitleText(
-                modifier = Modifier.padding(top = 8.dp),
-                text = stringResource(R.string.detail_screen_apk_checksum)
-            )
-            Text(
-                style = MaterialTheme.typography.bodyLarge,
-                text = uiState.installedAppDetailsModel.apkChecksum
+                text = uiState.installedAppDetailsModel.version
             )
         }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            DefaultButton(
+                buttonText = stringResource(R.string.detail_screen_button),
+                onClick = {
+                    handleIntent(InstalledAppDetailsIntent.OnLaunchBtnClick)
+                }
+            )
+        }
+
+
+        TitleText(
+            modifier = Modifier.padding(top = 24.dp),
+            text = stringResource(R.string.detail_screen_package_name)
+        )
+        Text(
+            style = MaterialTheme.typography.bodyLarge,
+            text = uiState.installedAppDetailsModel.packageName
+        )
+        TitleText(
+            modifier = Modifier.padding(top = 8.dp),
+            text = stringResource(R.string.detail_screen_apk_checksum)
+        )
+        Text(
+            style = MaterialTheme.typography.bodyLarge,
+            text = uiState.installedAppDetailsModel.apkChecksum
+        )
     }
 }
 

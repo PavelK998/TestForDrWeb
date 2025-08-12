@@ -1,5 +1,10 @@
 package ru.pk.testfordrweb.presentation.screens.installed_apps_list
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.pk.testfordrweb.R
 import ru.pk.testfordrweb.domain.model.InstalledAppDefaultInfoModel
+import ru.pk.testfordrweb.presentation.components.Loading
 import ru.pk.testfordrweb.presentation.screens.installed_apps_list.components.AppCard
 import ru.pk.testfordrweb.ui.theme.TestForDrWebTheme
 
@@ -39,26 +45,46 @@ fun InstalledAppsListScreen(
             )
         }
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            items(
-                items = uiState.installedAppsList,
-                key = { item ->
-                    item.packageName
+        AnimatedContent(
+            uiState.isLoading,
+            transitionSpec = {
+                fadeIn(
+                    animationSpec = tween(800)
+                ) togetherWith fadeOut(animationSpec = tween(300))
+            },
+        ) { isLoading ->
+            when (isLoading) {
+                true -> {
+                    Loading(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                    )
                 }
-            ) { appModel ->
-                AppCard(
-                    modifier = Modifier.fillMaxWidth(),
-                    model = appModel,
-                    onClick = {
-                        handleIntent(InstalledAppsListIntent.OnCardClick(appModel))
+                false -> {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                            .padding(horizontal = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        items(
+                            items = uiState.installedAppsList,
+                            key = { item ->
+                                item.packageName
+                            }
+                        ) { appModel ->
+                            AppCard(
+                                modifier = Modifier.fillMaxWidth(),
+                                model = appModel,
+                                onClick = {
+                                    handleIntent(InstalledAppsListIntent.OnCardClick(appModel))
+                                }
+                            )
+                        }
                     }
-                )
+                }
             }
         }
     }

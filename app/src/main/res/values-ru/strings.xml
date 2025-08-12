@@ -9,4 +9,7 @@
     <string name="detail_screen_button">Запустить приложение</string>
     <string name="detail_screen_apk_checksum">Контрольная сумма apk:</string>
     <string name="detail_screen_package_name">Имя пакета:</string>
+
+    <string name="start_app_error">Не удалось запустить приложение</string>
+    <string name="error">Кажется что-то пошло не так</string>
 </resources>

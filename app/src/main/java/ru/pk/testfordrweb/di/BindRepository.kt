@@ -5,7 +5,9 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ru.pk.testfordrweb.data.manager.DeviceManagerImpl
+import ru.pk.testfordrweb.data.manager.ResourceManagerImpl
 import ru.pk.testfordrweb.domain.manager.DeviceManager
+import ru.pk.testfordrweb.domain.manager.ResourceManager
 import javax.inject.Singleton
 
 @Module
@@ -16,4 +18,10 @@ abstract class BindRepository {
     abstract fun bindDeviceManager(
         deviceManagerImpl: DeviceManagerImpl
     ): DeviceManager
+
+    @Binds
+    @Singleton
+    abstract fun bindResourceManager(
+        resourceManagerImpl: ResourceManagerImpl
+    ): ResourceManager
 }
