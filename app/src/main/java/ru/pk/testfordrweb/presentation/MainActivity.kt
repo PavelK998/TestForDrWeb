@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             TestForDrWebTheme {
-                SetupNavHost(navHostController = navController)
+                SetupNavHost(navController = navController)
             }
         }
     }

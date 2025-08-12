@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TestForDrWeb</string>
+    <string name="list_screen_top_bar_name">Installed apps</string>
 </resources>
