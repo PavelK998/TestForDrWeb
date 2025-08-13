@@ -1,6 +1,7 @@
 package ru.pk.testfordrweb.data.manager
 
 import android.content.Context
+import android.content.pm.ApplicationInfo
 import android.content.pm.Checksum
 import android.os.Build
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -53,17 +54,27 @@ class DeviceManagerImpl @Inject constructor(
     override suspend fun getInstalledAppsDefaultInfo() = withContext(Dispatchers.IO) {
         val packageManager = context.packageManager
         //Получаем установленные прилолжения за исключением этого приложения
-        val apps = packageManager.getInstalledApplications(0)
-            .filter { it.packageName != context.packageName }
-            .sortedBy {
-                packageManager.getApplicationLabel(it).toString()
+        packageManager.getInstalledApplications(0)
+            .asSequence()
+            .filter { appInfo ->
+                // Исключаем текущее приложение
+                appInfo.packageName != context.packageName
+                        // Исключаем системные приложения (FLAG_SYSTEM)
+                        && (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0
+
+                        // Исключаем приложения Android (com.android.*)
+                        && !appInfo.packageName.startsWith("com.android.")
             }
-        apps.map {
-            InstalledAppDefaultInfoModel(
-                appName = packageManager.getApplicationLabel(it).toString(),
-                packageName = it.packageName
-            )
-        }
+            .map { appInfo ->
+                // Кэшируем метку приложения
+                val appName = packageManager.getApplicationLabel(appInfo).toString()
+                InstalledAppDefaultInfoModel(
+                    appName = appName,
+                    packageName = appInfo.packageName
+                )
+            }
+            .sortedBy { it.appName }
+            .toList()
     }
 
 
